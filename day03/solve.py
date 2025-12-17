@@ -8,7 +8,7 @@ inp = (Path(__file__).parent / "input.txt").read_text()
 # 818181911112111
 # """[1:]
 
-# Part 1
+print(" Part 1 ".center(100, "-"))
 
 
 def maximum_joltage(bank: tuple[int]) -> int:
@@ -32,5 +32,40 @@ def maximum_joltage(bank: tuple[int]) -> int:
 banks = [tuple(int(b) for b in bank) for bank in inp.splitlines()]
 n = sum(map(maximum_joltage, banks))
 print(n)
+print()
 
-# Part 2
+
+print(" Part 2 ".center(100, "-"))
+
+
+def print_joltage(bank: list[int], selected: list[int], joltage: str, *, hide=False):
+    print("".join(str(b) for b in bank))
+    print("".join("^" if i in selected else " " for i in range(len(bank))))
+    if not hide:
+        print(f"= {joltage}")
+    print()
+
+
+def maximum_joltage(bank: list[int]) -> int:
+    n = 12
+    descending = list(sorted(enumerate(bank), key=lambda t: t[1], reverse=True))
+    joltage = ""
+    selected = []
+    while len(joltage) < n:
+        i, j = next(
+            filter(
+                lambda t: t[0] not in selected
+                and (not selected or selected[-1] < t[0])
+                and t[0] + (n - len(joltage)) <= len(bank),
+                descending,
+            )
+        )
+        joltage += str(j)
+        selected.append(i)
+    print_joltage(bank, selected, joltage)
+    return int(joltage)
+
+
+banks = [list(int(b) for b in bank) for bank in inp.splitlines()]
+n = sum(map(maximum_joltage, banks))
+print(n)
